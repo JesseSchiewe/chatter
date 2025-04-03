@@ -28,8 +28,7 @@ def process_openai(prompt, history, model="gpt-4o-mini"):
         {"role": "user", "content": prompt}
     ]
     input_combined = base_messages + history + latest
-    
-    print(input_combined)
+    # print(input_combined)
 
     try:
         response = client.chat.completions.create(

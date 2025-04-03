@@ -53,3 +53,7 @@ docker push jdschiewe/chatter:latest
 To update Python dependencies (requirements.txt):
 pip freeze > requirements.txt
 
+
+### Run Automated Tests
+python -m unittest test_docker_chatter.py
+python -m unittest test_chatform.py
