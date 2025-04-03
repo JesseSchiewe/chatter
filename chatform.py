@@ -2,20 +2,35 @@ import tkinter as tk
 from tkinter import messagebox
 from openai_process import process_openai
 
+# This is used to track previous responses to allow for context in the conversation.
+history = []
+
 def submit_form():
+    global history
+
     user_input = input_field.get()
     if user_input.strip():
         try:
             # Call the process_openai function with the user input
-            result = process_openai(user_input)
+            result = process_openai(user_input, history)
             print('results from chatform:')
-            print(result)
+            # print(result.output_text)
+            # print(result)
+            print(result.choices[0].message.content)
+
+            history = []
+            for item in result.choices:
+                print(item)
+                history.append({"role": item.message.role, "content": item.message.content})
+
+            # print('History variable value:')
+            # print(history)
 
             # Display the output from process_openai
-            messagebox.showinfo("Response", result)
+            messagebox.showinfo("Response", result.choices[0].message.content)
 
             # Append the response to the textbox
-            response_box.insert(tk.END, f"User: {user_input}\nAI: {result}\n\n")
+            response_box.insert(tk.END, f"User: {user_input}\nAI: {result.choices[0].message.content}\n\n")
             response_box.see(tk.END)  # Scroll to the bottom
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {e}")

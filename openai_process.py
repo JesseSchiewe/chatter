@@ -1,22 +1,13 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
-# from sys import argv
 
-# Handle input passed to the script
-# input_prompt = argv[1]
-# print(f'##### Sending this to OpenAI API: {input_prompt}')
-# print('')
-
-def process_openai(prompt, model="gpt-4o-mini", max_tokens=150):
+def process_openai(prompt, history, model="gpt-4o-mini"):
     """
     Sends a prompt to the OpenAI API and returns the response.
-
     Args:
         prompt (str): The input prompt to send to the API.
         model (str): The OpenAI model to use (default is "text-davinci-003").
-        max_tokens (int): The maximum number of tokens to include in the response.
-
     Returns:
         str: The response from the OpenAI API.
     """
@@ -29,16 +20,39 @@ def process_openai(prompt, model="gpt-4o-mini", max_tokens=150):
     client = OpenAI(
         api_key=openai_api_key
     )
+
+    base_messages = [
+        {"role": "developer", "content": "You are a hilarious assistant with a special interest in table tennis."}
+    ]
+    latest = [
+        {"role": "user", "content": prompt}
+    ]
+    input_combined = base_messages + history + latest
     
+    print(input_combined)
+
     try:
         response = client.chat.completions.create(
             model=model,
             store=True,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
+            messages=input_combined
+            # messages=[
+            #     {"role": "developer", "content": "You are a hilarious assistant with a special interest in table tennis."},
+            #     {"role": "user", "content": prompt}
+            # ]
         )
-        return response.choices[0].message.content
+        # response = client.responses.create(
+        #     model=model,
+        #     previous_response_id=previous_response_id,
+        #     input=prompt,
+        #     max_tokens=max_tokens
+        # )
+        # return response.choices[0].message.content
+
+        # print('This should show the response object:')
+        # print(response)
+
+        return response
     except Exception as e:
         return f"An error occurred: {e}"
 
